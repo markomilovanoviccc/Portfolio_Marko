@@ -4973,4 +4973,82 @@ a.contact-option:hover .contact-option-label { color: rgba(255, 255, 255, 0.72);
   .realtalk-document-information h3 {
     font-size: 1.3rem;
   }
+}/* =========================================
+   SCROLL-ANIMATIONEN
+========================================= */
+
+.reveal {
+  opacity: 0;
+  filter: blur(6px);
+  transform: translateY(35px);
+  transition:
+    opacity 0.8s ease,
+    filter 0.8s ease,
+    transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  filter: blur(0);
+  transform: translateY(0);
+}
+
+.reveal-delay-1 {
+  transition-delay: 0.1s;
+}
+
+.reveal-delay-2 {
+  transition-delay: 0.2s;
+}
+
+.reveal-delay-3 {
+  transition-delay: 0.3s;
+}
+
+
+/* =========================================
+   VERFEINERTE KARTENANIMATION
+========================================= */
+
+.project-card .card-content {
+  transition:
+    transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.project-card:hover .card-content {
+  transform: translateY(-8px);
+}
+
+.project-card:hover .card-arrow {
+  background: var(--blue);
+  transform: rotate(45deg) scale(1.08);
+}
+
+/*
+  Erhält die bestehende Hover-Bewegung,
+  obwohl die Karte zusätzlich .reveal besitzt.
+*/
+
+.project-card.reveal.is-visible:hover {
+  transform: translateY(-8px);
+}
+
+
+/* =========================================
+   BARRIEREFREIHEIT
+========================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    filter: none;
+    transform: none;
+    transition: none;
+  }
+
+  .project-card,
+  .project-card .card-content,
+  .card-arrow {
+    transition: none;
+  }
 }

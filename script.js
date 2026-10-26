@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
   setupTitleAnimation();
+  setupScrollReveal();
   setupBrochureViewer();
 });
 
@@ -105,7 +106,53 @@ function setupTitleAnimation() {
     });
   }
 
-  window.setInterval(changeTitle, 2300);
+  window.setInterval(changeTitle, 3200);
+}
+
+/* ==================================================
+   SCROLL-ANIMATIONEN
+================================================== */
+
+function setupScrollReveal() {
+  const revealElements =
+    document.querySelectorAll(".reveal");
+
+  if (!revealElements.length) {
+    return;
+  }
+
+  const reducedMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)"
+  ).matches;
+
+  if (reducedMotion) {
+    revealElements.forEach((element) => {
+      element.classList.add("is-visible");
+    });
+
+    return;
+  }
+
+  const revealObserver = new IntersectionObserver(
+    (entries, observer) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) {
+          return;
+        }
+
+        entry.target.classList.add("is-visible");
+        observer.unobserve(entry.target);
+      });
+    },
+    {
+      threshold: 0.12,
+      rootMargin: "0px 0px -60px 0px"
+    }
+  );
+
+  revealElements.forEach((element) => {
+    revealObserver.observe(element);
+  });
 }
 
 /* ==================================================
