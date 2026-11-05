@@ -1,459 +1,492 @@
-document.addEventListener("DOMContentLoaded", () => {
-  setupTitleAnimation();
-  setupScrollReveal();
-  setupBrochureViewer();
-});
-
 /* ==================================================
-   TITELANIMATION AUF DER STARTSEITE
+   EINSTELLUNGEN
 ================================================== */
 
-function setupTitleAnimation() {
-  const title = document.getElementById("title");
+const TITLES = ["Marko Milovanovic", "Portfolio", "Ideas into Impact"];
+const TITLE_INTERVAL = 3200;
 
-  if (!title) {
+const REVEAL_GROUPS = [
+  [".card, .timeline-item, .document-preview, .teaser-visual", "up"],
+  [".step", "line"],
+  [".portrait, .video-frame, .award, .brochure-preview", "media"],
+  [".tag", "pill"],
+  [
+    `main > section h2, .section-label, .section-text, .section-head p,
+     .section-head .button, .prose > p, .statement, .pillars, .text-link,
+     .button-row, .next-label, .next-link, .contact-socials > *, .legal-section`,
+    "up"
+  ]
+];
+
+const NO_REVEAL_INSIDE = ".hero, .brochure-viewer";
+
+/* ==================================================
+   HILFSFUNKTIONEN
+================================================== */
+
+const root = document.documentElement;
+
+const reducedMotion = window.matchMedia(
+  "(prefers-reduced-motion: reduce)"
+).matches;
+
+const hasMouse = window.matchMedia(
+  "(hover: hover) and (pointer: fine)"
+).matches;
+
+/* Führt eine Funktion höchstens einmal pro Bild aus. */
+function onScrollAndResize(update) {
+  let isQueued = false;
+
+  function queueUpdate() {
+    if (isQueued) {
+      return;
+    }
+
+    isQueued = true;
+
+    window.requestAnimationFrame(() => {
+      update();
+      isQueued = false;
+    });
+  }
+
+  window.addEventListener("scroll", queueUpdate, { passive: true });
+  window.addEventListener("resize", queueUpdate);
+
+  update();
+}
+
+/* Meldet jedes Element einmal, sobald es sichtbar wird. */
+function whenVisible(elements, callback, options) {
+  const observer = new IntersectionObserver((entries) => {
+    const visible = entries
+      .filter((entry) => entry.isIntersecting)
+      .map((entry) => entry.target);
+
+    visible.forEach((element) => observer.unobserve(element));
+
+    if (visible.length) {
+      callback(visible);
+    }
+  }, options);
+
+  elements.forEach((element) => observer.observe(element));
+}
+
+/* ==================================================
+   INTRO UND TITEL AUF DER STARTSEITE
+================================================== */
+
+function setupIntro() {
+  const intro = document.querySelector(".intro");
+
+  if (!intro) {
     return;
   }
 
-  const titles = [
-    "Marko Milovanovic",
-    "Portfolio",
-    "Ideas into Impact"
-  ];
+  try {
+    sessionStorage.setItem("intro-seen", "true");
+  } catch {
+    /* Ohne Speicher läuft das Intro einfach bei jedem Besuch. */
+  }
 
+  intro.addEventListener("click", () => {
+    root.classList.add("no-intro");
+  });
+}
+
+function setupTitle() {
+  const title = document.getElementById("title");
+
+  if (!title || reducedMotion) {
+    return;
+  }
+
+  const titleText = document.createElement("span");
   let currentIndex = 0;
   let isAnimating = false;
 
-  const titleText = document.createElement("span");
+  titleText.className = "title-pop";
+  titleText.textContent = TITLES[currentIndex];
+  title.replaceChildren(titleText);
 
-  titleText.classList.add("title-pop");
-  titleText.textContent = titles[currentIndex];
-
-  title.textContent = "";
-  title.appendChild(titleText);
-
-  const reducedMotion = window.matchMedia(
-    "(prefers-reduced-motion: reduce)"
-  ).matches;
-
-  if (reducedMotion) {
-    return;
-  }
-
-  function changeTitle() {
-    if (isAnimating) {
+  async function changeTitle() {
+    if (isAnimating || document.hidden) {
       return;
     }
 
     isAnimating = true;
 
-    const disappear = titleText.animate(
+    await titleText.animate(
       [
-        {
-          opacity: 1,
-          filter: "blur(0)",
-          transform: "scale(1)"
-        },
-        {
-          opacity: 0,
-          filter: "blur(12px)",
-          transform: "scale(0.72)"
-        }
+        { opacity: 1, filter: "blur(0)", transform: "scale(1)" },
+        { opacity: 0, filter: "blur(12px)", transform: "scale(0.72)" }
       ],
       {
         duration: 280,
         easing: "cubic-bezier(0.55, 0, 1, 0.45)",
         fill: "forwards"
       }
-    );
+    ).finished;
 
-    disappear.finished.then(() => {
-      currentIndex =
-        (currentIndex + 1) % titles.length;
+    currentIndex = (currentIndex + 1) % TITLES.length;
+    titleText.textContent = TITLES[currentIndex];
 
-      titleText.textContent =
-        titles[currentIndex];
+    await titleText.animate(
+      [
+        { opacity: 0, filter: "blur(15px)", transform: "scale(0.58)" },
+        { opacity: 1, filter: "blur(2px)", transform: "scale(1.08)", offset: 0.7 },
+        { opacity: 1, filter: "blur(0)", transform: "scale(1)" }
+      ],
+      {
+        duration: 620,
+        easing: "cubic-bezier(0.16, 1, 0.3, 1)",
+        fill: "forwards"
+      }
+    ).finished;
 
-      const appear = titleText.animate(
-        [
-          {
-            opacity: 0,
-            filter: "blur(15px)",
-            transform: "scale(0.58)"
-          },
-          {
-            opacity: 1,
-            filter: "blur(2px)",
-            transform: "scale(1.08)",
-            offset: 0.7
-          },
-          {
-            opacity: 1,
-            filter: "blur(0)",
-            transform: "scale(1)"
-          }
-        ],
-        {
-          duration: 620,
-          easing: "cubic-bezier(0.16, 1, 0.3, 1)",
-          fill: "forwards"
-        }
-      );
-
-      appear.finished.then(() => {
-        isAnimating = false;
-      });
-    });
+    isAnimating = false;
   }
 
-  window.setInterval(changeTitle, 3200);
+  window.setInterval(changeTitle, TITLE_INTERVAL);
 }
 
 /* ==================================================
-   SCROLL-ANIMATIONEN
+   EINBLENDEN BEIM SCROLLEN
+   Neue Inhalte brauchen keine zusätzlichen Klassen.
 ================================================== */
 
 function setupScrollReveal() {
-  const revealElements =
-    document.querySelectorAll(".reveal");
-
-  if (!revealElements.length) {
-    return;
-  }
-
-  const reducedMotion = window.matchMedia(
-    "(prefers-reduced-motion: reduce)"
-  ).matches;
-
   if (reducedMotion) {
-    revealElements.forEach((element) => {
-      element.classList.add("is-visible");
-    });
-
     return;
   }
 
-  const revealObserver = new IntersectionObserver(
-    (entries, observer) => {
-      entries.forEach((entry) => {
-        if (!entry.isIntersecting) {
-          return;
-        }
+  const targets = [];
 
-        entry.target.classList.add("is-visible");
-        observer.unobserve(entry.target);
-      });
-    },
-    {
-      threshold: 0.12,
-      rootMargin: "0px 0px -60px 0px"
-    }
-  );
+  REVEAL_GROUPS.forEach(([selector, type]) => {
+    document.querySelectorAll(selector).forEach((element) => {
+      const isTaken =
+        element.closest(NO_REVEAL_INSIDE) ||
+        element.closest("[data-reveal]");
 
-  revealElements.forEach((element) => {
-    revealObserver.observe(element);
+      if (!isTaken) {
+        element.dataset.reveal = type;
+        targets.push(element);
+      }
+    });
+  });
+
+  function reveal(elements) {
+    const inPageOrder = [...elements].sort((first, second) =>
+      first.compareDocumentPosition(second) &
+      Node.DOCUMENT_POSITION_FOLLOWING
+        ? -1
+        : 1
+    );
+
+    inPageOrder.forEach((element, index) => {
+      const step = element.dataset.reveal === "pill" ? 35 : 75;
+      const delay = Math.min(index * step, 420);
+
+      element.style.setProperty("--delay", `${delay}ms`);
+      element.classList.add("is-visible");
+
+      /* Danach gelten wieder die normalen Hover-Effekte. */
+      window.setTimeout(() => {
+        element.removeAttribute("data-reveal");
+        element.classList.remove("is-visible");
+        element.style.removeProperty("--delay");
+      }, delay + 1500);
+    });
+  }
+
+  whenVisible(targets, reveal, {
+    threshold: 0.08,
+    rootMargin: "0px 0px -6% 0px"
   });
 }
 
 /* ==================================================
-   BROSCHÜREN-VIEWER MIT 3D-BLÄTTEREFFEKT
+   HEADER UND ZEITLEISTE
 ================================================== */
 
-function setupBrochureViewer() {
-  const brochureBook =
-    document.querySelector("#brochureBook");
+function setupHeader() {
+  const header = document.querySelector(".site-header");
 
-  const brochureLeftPage =
-    document.querySelector("#brochureLeftPage");
+  onScrollAndResize(() => {
+    header.classList.toggle("is-scrolled", window.scrollY > 12);
+  });
+}
 
-  const brochureRightPage =
-    document.querySelector("#brochureRightPage");
+function setupTimeline() {
+  const timeline = document.querySelector(".timeline");
 
-  const brochureLeftWrapper =
-    document.querySelector("#brochureLeftWrapper");
-
-  const brochureRightWrapper =
-    document.querySelector("#brochureRightWrapper");
-
-  const brochurePrev =
-    document.querySelector("#brochurePrev");
-
-  const brochureNext =
-    document.querySelector("#brochureNext");
-
-  const brochurePageCounter =
-    document.querySelector("#brochurePageCounter");
-
-  const brochureProgress =
-    document.querySelector("#brochureProgress");
-
-  /*
-   * Beendet die Funktion auf allen Seiten,
-   * auf denen keine Broschüre vorhanden ist.
-   */
-
-  if (
-    !brochureBook ||
-    !brochureLeftPage ||
-    !brochureRightPage ||
-    !brochureLeftWrapper ||
-    !brochureRightWrapper ||
-    !brochurePrev ||
-    !brochureNext ||
-    !brochurePageCounter ||
-    !brochureProgress
-  ) {
+  if (!timeline) {
     return;
   }
 
-  /*
-   * Seite 1 ist die einzelne Titelseite.
-   * Seiten 2–19 werden als Doppelseiten angezeigt.
-   * Seite 20 ist die einzelne Rückseite.
-   */
+  const items = timeline.querySelectorAll(".timeline-item");
 
-  const brochureSpreads = [
-    [1],
-    [2, 3],
-    [4, 5],
-    [6, 7],
-    [8, 9],
-    [10, 11],
-    [12, 13],
-    [14, 15],
-    [16, 17],
-    [18, 19],
-    [20]
-  ];
+  onScrollAndResize(() => {
+    const focusLine = window.innerHeight * 0.65;
+    const box = timeline.getBoundingClientRect();
+    const progress = (focusLine - box.top) / box.height;
+
+    timeline.style.setProperty(
+      "--progress",
+      Math.min(1, Math.max(0, progress)).toFixed(4)
+    );
+
+    items.forEach((item) => {
+      const isPassed = item.getBoundingClientRect().top < focusLine;
+
+      item.classList.toggle("is-passed", isPassed);
+    });
+  });
+}
+
+/* ==================================================
+   ZAHLEN ZÄHLEN HOCH
+================================================== */
+
+function countUp(element) {
+  const original = element.textContent.trim();
+  const match = original.match(/^(\D*)(\d[\d’]*)(\D*)$/);
+
+  if (!match) {
+    return;
+  }
+
+  const [, prefix, digits, suffix] = match;
+  const target = Number(digits.replace(/’/g, ""));
+  const hasSeparator = digits.includes("’");
+  const duration = 1400;
+  const start = performance.now();
+
+  function format(value) {
+    const text = String(value);
+
+    return hasSeparator
+      ? text.replace(/\B(?=(\d{3})+$)/g, "’")
+      : text;
+  }
+
+  function step(now) {
+    const progress = Math.min(1, (now - start) / duration);
+    const eased = 1 - Math.pow(1 - progress, 4);
+
+    element.textContent =
+      prefix + format(Math.round(target * eased)) + suffix;
+
+    if (progress < 1) {
+      window.requestAnimationFrame(step);
+    }
+  }
+
+  window.requestAnimationFrame(step);
+}
+
+function setupCountUp() {
+  if (!reducedMotion) {
+    whenVisible(
+      document.querySelectorAll(".card--stat strong, .card--glass strong"),
+      (numbers) => numbers.forEach(countUp),
+      { threshold: 0.6 }
+    );
+  }
+}
+
+/* ==================================================
+   EFFEKTE MIT DER MAUS
+================================================== */
+
+function setupCardGlow() {
+  document.addEventListener("pointermove", (event) => {
+    const card = event.target.closest(".card");
+
+    if (!card) {
+      return;
+    }
+
+    const box = card.getBoundingClientRect();
+
+    card.style.setProperty("--mouse-x", `${event.clientX - box.left}px`);
+    card.style.setProperty("--mouse-y", `${event.clientY - box.top}px`);
+  });
+}
+
+function setupHeroDepth() {
+  const hero = document.querySelector(".hero");
+  const title = hero?.querySelector("h1");
+
+  if (!title) {
+    return;
+  }
+
+  hero.addEventListener("pointermove", (event) => {
+    const box = hero.getBoundingClientRect();
+    const x = (event.clientX - box.left) / box.width - 0.5;
+    const y = (event.clientY - box.top) / box.height - 0.5;
+
+    title.style.translate = `${x * 14}px ${y * 10}px`;
+  });
+
+  hero.addEventListener("pointerleave", () => {
+    title.style.removeProperty("translate");
+  });
+}
+
+/* ==================================================
+   BROSCHÜRE MIT 3D-BLÄTTEREFFEKT
+================================================== */
+
+function setupBrochure() {
+  const book = document.querySelector("#brochureBook");
+
+  if (!book) {
+    return;
+  }
+
+  const leftPage = document.querySelector("#brochureLeftPage");
+  const rightPage = document.querySelector("#brochureRightPage");
+  const rightWrapper = document.querySelector("#brochureRightWrapper");
+  const previousButton = document.querySelector("#brochurePrev");
+  const nextButton = document.querySelector("#brochureNext");
+  const counter = document.querySelector("#brochurePageCounter");
+  const progressBar = document.querySelector("#brochureProgress");
+
+  const PAGE_COUNT = 20;
+  const TURN_MIDDLE = 360;
+  const TURN_END = 760;
+  const SWIPE_DISTANCE = 45;
+
+  /* Titel- und Rückseite einzeln, dazwischen Doppelseiten */
+  const spreads = [[1]];
+
+  for (let page = 2; page < PAGE_COUNT; page += 2) {
+    spreads.push([page, page + 1]);
+  }
+
+  spreads.push([PAGE_COUNT]);
 
   let currentSpread = 0;
   let isTurning = false;
+  let touchStartX = null;
 
-  /*
-   * Erstellt den Pfad zum jeweiligen Seitenbild.
-   */
+  function pageSource(page) {
+    const number = String(page).padStart(2, "0");
 
-  function getPageSource(pageNumber) {
-    const formattedPageNumber =
-      String(pageNumber).padStart(2, "0");
-
-    return (
-      `broschuere-seiten/seite-${formattedPageNumber}.webp`
-    );
+    return `broschuere-seiten/seite-${number}.webp`;
   }
 
-  /*
-   * Zeigt die aktuelle Einzel- oder Doppelseite.
-   */
+  function preloadNeighbours() {
+    [currentSpread - 1, currentSpread + 1].forEach((index) => {
+      (spreads[index] || []).forEach((page) => {
+        new Image().src = pageSource(page);
+      });
+    });
+  }
 
-  function renderSpread(index) {
-    const visiblePages =
-      brochureSpreads[index];
+  function updateButtons() {
+    previousButton.disabled = currentSpread === 0;
+    nextButton.disabled = currentSpread === spreads.length - 1;
+  }
 
-    const leftPageNumber =
-      visiblePages[0];
+  function render() {
+    const [left, right] = spreads[currentSpread];
 
-    const rightPageNumber =
-      visiblePages[1];
+    leftPage.src = pageSource(left);
+    leftPage.alt = `Broschüre Seite ${left}`;
 
-    brochureLeftPage.src =
-      getPageSource(leftPageNumber);
-
-    brochureLeftPage.alt =
-      `Broschüre Seite ${leftPageNumber}`;
-
-    if (rightPageNumber) {
-      brochureRightPage.src =
-        getPageSource(rightPageNumber);
-
-      brochureRightPage.alt =
-        `Broschüre Seite ${rightPageNumber}`;
-
-      brochureRightWrapper.hidden = false;
-      brochureBook.classList.remove("is-single");
-
-      brochurePageCounter.textContent =
-        `Seiten ${leftPageNumber}–${rightPageNumber} von 20`;
+    if (right) {
+      rightPage.src = pageSource(right);
+      rightPage.alt = `Broschüre Seite ${right}`;
+      counter.textContent = `Seiten ${left}–${right} von ${PAGE_COUNT}`;
     } else {
-      brochureRightWrapper.hidden = true;
-      brochureBook.classList.add("is-single");
-
-      brochurePageCounter.textContent =
-        `Seite ${leftPageNumber} von 20`;
+      counter.textContent = `Seite ${left} von ${PAGE_COUNT}`;
     }
 
-    brochurePrev.disabled =
-      index === 0;
+    rightWrapper.hidden = !right;
+    book.classList.toggle("is-single", !right);
 
-    brochureNext.disabled =
-      index === brochureSpreads.length - 1;
+    progressBar.style.width =
+      `${((currentSpread + 1) / spreads.length) * 100}%`;
 
-    const progress =
-      ((index + 1) / brochureSpreads.length) * 100;
-
-    brochureProgress.style.width =
-      `${progress}%`;
+    updateButtons();
+    preloadNeighbours();
   }
 
-  /*
-   * Erstellt das bewegliche Blatt mit einer
-   * Vorder- und Rückseite.
-   */
+  function createFace(side, page) {
+    const face = document.createElement("div");
+    const image = document.createElement("img");
 
-  function createTurningLeaf(direction, nextIndex) {
-    const leaf =
-      document.createElement("div");
+    face.className = `brochure-leaf-face brochure-leaf-${side}`;
+    image.src = pageSource(page);
+    image.alt = "";
+    face.appendChild(image);
 
-    const front =
-      document.createElement("div");
+    return face;
+  }
 
-    const back =
-      document.createElement("div");
+  function createLeaf(direction, nextPages) {
+    const currentPages = spreads[currentSpread];
+    const isForward = direction > 0;
+    const leaf = document.createElement("div");
 
-    const frontImage =
-      document.createElement("img");
+    const frontPage = isForward
+      ? currentPages[1] || currentPages[0]
+      : currentPages[0];
 
-    const backImage =
-      document.createElement("img");
-
-    const currentPages =
-      brochureSpreads[currentSpread];
-
-    const nextPages =
-      brochureSpreads[nextIndex];
+    const backPage = isForward
+      ? nextPages[0]
+      : nextPages[1] || nextPages[0];
 
     leaf.className =
-      `brochure-turning-leaf ${
-        direction > 0
-          ? "turn-forward"
-          : "turn-back"
-      }`;
+      `brochure-turning-leaf ${isForward ? "turn-forward" : "turn-back"}`;
 
-    front.className =
-      "brochure-leaf-face brochure-leaf-front";
-
-    back.className =
-      "brochure-leaf-face brochure-leaf-back";
-
-    /*
-     * Beim Vorwärtsblättern wird die aktuell
-     * rechte Seite umgeblättert.
-     *
-     * Beim Zurückblättern wird die aktuell
-     * linke Seite zurückgeschlagen.
-     */
-
-    const frontPageNumber =
-      direction > 0
-        ? currentPages[1] || currentPages[0]
-        : currentPages[0];
-
-    const backPageNumber =
-      direction > 0
-        ? nextPages[0]
-        : nextPages[1] || nextPages[0];
-
-    frontImage.src =
-      getPageSource(frontPageNumber);
-
-    backImage.src =
-      getPageSource(backPageNumber);
-
-    frontImage.alt = "";
-    backImage.alt = "";
-
-    front.appendChild(frontImage);
-    back.appendChild(backImage);
-
-    leaf.appendChild(front);
-    leaf.appendChild(back);
-
-    brochureBook.appendChild(leaf);
+    leaf.append(createFace("front", frontPage), createFace("back", backPage));
+    book.appendChild(leaf);
 
     return leaf;
   }
 
-  /*
-   * Führt die Blätteranimation aus.
-   */
-
   function turnPage(direction) {
-    if (isTurning) {
-      return;
-    }
+    const nextSpread = currentSpread + direction;
 
-    const nextIndex =
-      currentSpread + direction;
-
-    if (
-      nextIndex < 0 ||
-      nextIndex >= brochureSpreads.length
-    ) {
+    if (isTurning || !spreads[nextSpread]) {
       return;
     }
 
     isTurning = true;
+    previousButton.disabled = true;
+    nextButton.disabled = true;
 
-    brochurePrev.disabled = true;
-    brochureNext.disabled = true;
+    const leaf = createLeaf(direction, spreads[nextSpread]);
 
-    const turningLeaf =
-      createTurningLeaf(direction, nextIndex);
-
-    /*
-     * Die Klasse wird leicht verzögert hinzugefügt,
-     * damit der Browser die Ausgangsposition erkennt.
-     */
-
+    /* Zwei Bilder warten, damit der Browser den Start kennt. */
     window.requestAnimationFrame(() => {
       window.requestAnimationFrame(() => {
-        turningLeaf.classList.add("is-turning");
+        leaf.classList.add("is-turning");
       });
     });
 
-    /*
-     * In der Mitte der Animation werden die
-     * darunterliegenden Seiten gewechselt.
-     */
+    window.setTimeout(() => {
+      currentSpread = nextSpread;
+      render();
+      previousButton.disabled = true;
+      nextButton.disabled = true;
+    }, TURN_MIDDLE);
 
     window.setTimeout(() => {
-      currentSpread = nextIndex;
-      renderSpread(currentSpread);
-    }, 360);
-
-    /*
-     * Nach der Animation wird das zusätzliche
-     * Blatt entfernt.
-     */
-
-    window.setTimeout(() => {
-      turningLeaf.remove();
+      leaf.remove();
       isTurning = false;
-
-      brochurePrev.disabled =
-        currentSpread === 0;
-
-      brochureNext.disabled =
-        currentSpread ===
-        brochureSpreads.length - 1;
-    }, 760);
+      updateButtons();
+    }, TURN_END);
   }
 
-  /*
-   * Navigation über die Pfeil-Buttons.
-   */
-
-  brochureNext.addEventListener("click", () => {
-    turnPage(1);
-  });
-
-  brochurePrev.addEventListener("click", () => {
-    turnPage(-1);
-  });
-
-  /*
-   * Navigation über die Tastatur.
-   */
+  nextButton.addEventListener("click", () => turnPage(1));
+  previousButton.addEventListener("click", () => turnPage(-1));
 
   document.addEventListener("keydown", (event) => {
     if (event.key === "ArrowRight") {
@@ -465,9 +498,44 @@ function setupBrochureViewer() {
     }
   });
 
-  /*
-   * Broschüre beim Laden initialisieren.
-   */
+  book.addEventListener(
+    "touchstart",
+    (event) => {
+      touchStartX = event.changedTouches[0].clientX;
+    },
+    { passive: true }
+  );
 
-  renderSpread(currentSpread);
+  book.addEventListener(
+    "touchend",
+    (event) => {
+      const distance = event.changedTouches[0].clientX - touchStartX;
+
+      if (Math.abs(distance) > SWIPE_DISTANCE) {
+        turnPage(distance < 0 ? 1 : -1);
+      }
+    },
+    { passive: true }
+  );
+
+  render();
 }
+
+/* ==================================================
+   START
+================================================== */
+
+document.addEventListener("DOMContentLoaded", () => {
+  setupIntro();
+  setupTitle();
+  setupScrollReveal();
+  setupHeader();
+  setupTimeline();
+  setupCountUp();
+  setupBrochure();
+
+  if (hasMouse && !reducedMotion) {
+    setupCardGlow();
+    setupHeroDepth();
+  }
+});

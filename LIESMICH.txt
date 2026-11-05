@@ -1,0 +1,21 @@
+PORTFOLIO MARKO MILOVANOVIC – VERSION 4
+
+Einbauen
+1. Den bisherigen Inhalt deines Projektordners ersetzen, den Ordner .git
+   aber behalten. Alte Dateien wie repower-award.png im Hauptordner
+   werden nicht mehr gebraucht.
+2. In VS Code prüfen, zum Beispiel mit Live Server.
+3. Wenn alles passt, auf GitHub hochladen.
+LIESMICH.txt musst du nicht hochladen.
+
+Titel auf der Startseite
+Die Texte und das Tempo stehen ganz oben in script.js.
+Das MM-Intro entfernst du, indem du in index.html den Block
+<div class="intro"> löschst.
+
+Farben, Abstände und Schriftgrössen
+In styles.css ganz oben unter "1 EINSTELLUNGEN".
+
+Nicht mehr verwendet, aber noch im Ordner
+Die Bilder der früheren Collage in images/ (ausser deinFoto.jpg und
+repower-award.png) und repower-award.pdf.

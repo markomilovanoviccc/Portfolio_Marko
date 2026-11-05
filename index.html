@@ -1,298 +1,69 @@
 <!DOCTYPE html>
 <html lang="de">
-
 <head>
   <meta charset="UTF-8" />
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  />
-
-  <meta
-    name="description"
-    content="Portfolio von Marko Milovanovic mit Projekten aus Marketing, Kommunikation, Content und Projektmanagement."
-  />
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Portfolio von Marko Milovanovic mit Projekten aus Marketing, Kommunikation, Content und Projektmanagement." />
   <title>Marko Milovanovic – Portfolio</title>
-
-  <link
-    rel="icon"
-    type="image/svg+xml"
-    href="favicon.svg"
-  />
-
+  <link rel="canonical" href="https://markomilovanovic.ch/" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg?v=2" />
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png?v=2" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2" />
+  <meta name="theme-color" content="#101114" />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="de_CH" />
+  <meta property="og:site_name" content="Marko Milovanovic" />
+  <meta property="og:title" content="Marko Milovanovic – Portfolio" />
+  <meta property="og:description" content="Portfolio von Marko Milovanovic mit Projekten aus Marketing, Kommunikation, Content und Projektmanagement." />
+  <meta property="og:url" content="https://markomilovanovic.ch/" />
+  <meta name="twitter:card" content="summary" />
+  <script>try{if(sessionStorage.getItem("intro-seen"))document.documentElement.classList.add("no-intro")}catch(e){}</script>
   <link rel="stylesheet" href="styles.css" />
+  <script src="script.js" defer></script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Person", "name": "Marko Milovanovic", "url": "https://markomilovanovic.ch/", "description": "Portfolio von Marko Milovanovic mit Projekten aus Marketing, Kommunikation, Content und Projektmanagement.", "sameAs": ["https://www.linkedin.com/in/marko-milovanovic-8522802a2", "https://www.youtube.com/@markomilovanovicc"]}</script>
 </head>
-<title>Marko Milovanovic</title>
 
-<link
-  rel="icon"
-  type="image/svg+xml"
-  href="favicon.svg"
-/>
 <body>
+  <a class="skip-link" href="#main">Zum Inhalt springen</a>
+  <div class="intro" aria-hidden="true">
+    <div class="intro-inner">
+      <div class="intro-logo"><span>M</span><span>M</span></div>
+      <div class="intro-line"></div>
+    </div>
+  </div>
 
-  <div class="page-wrap">
+  <!-- HEADER -->
+  <header class="site-header">
+    <a class="logo" href="index.html" aria-label="Zur Startseite">MM</a>
+    <nav aria-label="Hauptnavigation">
+      <ul>
+        <li><a href="#work">Work</a></li>
+        <li><a href="about.html">About Me</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
 
-    <!-- HEADER -->
-    <header class="main-header">
-
-      <a
-        class="logo"
-        href="index.html"
-        aria-label="Zur Startseite"
-      >
-        MM
-      </a>
-
-      <nav aria-label="Hauptnavigation">
-
-        <ul>
-
-          <li>
-            <a href="#work">
-              Work
-            </a>
-          </li>
-
-          <li>
-            <a href="about.html">
-              About Me
-            </a>
-          </li>
-
-          <li>
-            <a href="contact.html">
-              Contact
-            </a>
-          </li>
-
-        </ul>
-
-      </nav>
-
-    </header>
-
+  <main id="main">
     <!-- HERO -->
-    <section class="hero">
-
-      <h1 id="title">
-        Marko Milovanovic
-      </h1>
-
+    <section class="hero hero--home">
+      <h1 id="title">Marko Milovanovic</h1>
     </section>
 
     <!-- EXPERTISE & PROJEKTE -->
-    <section
-      class="work-section"
-      id="work"
-    >
-
-      <!-- EINLEITUNG -->
-      <div class="section-heading">
-
-        <p class="section-label reveal">
-          Expertise &amp; Projekte
-        </p>
-
-        <h2 class="work-title reveal reveal-delay-1">
-          Strategie, Kreativität und Umsetzung.
-        </h2>
-
-        <p class="section-intro reveal reveal-delay-2">
-          Von der ersten Idee bis zur fertigen Kampagne entwickle ich
-          Kommunikation, die Menschen erreicht und Marken weiterbringt.
-        </p>
-
+    <section id="work">
+      <div class="section-head section-head--center">
+        <p class="section-label">Expertise &amp; Projekte</p>
+        <h2>Strategie, Kreativität und Umsetzung.</h2>
+        <p>Von der ersten Idee bis zur fertigen Kampagne entwickle ich Kommunikation, die Menschen erreicht und Marken weiterbringt.</p>
       </div>
-
-      <!-- PROJEKTÜBERSICHT -->
-      <div class="project-grid">
-
-        <!-- MARKETING -->
-        <a
-          class="project-card marketing-card reveal"
-          href="marketing.html"
-          aria-label="Marketing und Advertising ansehen"
-        >
-
-          <div class="card-content">
-
-            <p class="card-label">
-              Strategie &amp; Performance
-            </p>
-
-            <h3>
-              Marketing &amp; Advertising
-            </h3>
-
-            <div class="card-tags">
-
-              <span>
-                Digital Marketing
-              </span>
-
-              <span>
-                Campaigning
-              </span>
-
-            </div>
-
-          </div>
-
-          <span
-            class="card-arrow"
-            aria-hidden="true"
-          >
-            ↗
-          </span>
-
-        </a>
-
-        <!-- COMMUNICATIONS MANAGEMENT -->
-        <a
-          class="project-card communications-card reveal reveal-delay-1"
-          href="communications.html"
-          aria-label="Communications Management ansehen"
-        >
-
-          <div class="card-content">
-
-            <p class="card-label">
-              Marke &amp; Kommunikation
-            </p>
-
-            <h3>
-              Communications Management
-            </h3>
-
-            <div class="card-tags">
-
-              <span>
-                Corporate Communications
-              </span>
-
-              <span>
-                Branding
-              </span>
-
-            </div>
-
-          </div>
-
-          <span
-            class="card-arrow"
-            aria-hidden="true"
-          >
-            ↗
-          </span>
-
-        </a>
-
-        <!-- CONTENT -->
-        <a
-          class="project-card content-card reveal reveal-delay-2"
-          href="content.html"
-          aria-label="Content und Visual Storytelling ansehen"
-        >
-
-          <div class="card-content">
-
-            <p class="card-label">
-              Kreation &amp; Produktion
-            </p>
-
-            <h3>
-              Content &amp; Visual Storytelling
-            </h3>
-
-            <div class="card-tags">
-
-              <span>
-                Video
-              </span>
-
-              <span>
-                Visual Design
-              </span>
-
-            </div>
-
-          </div>
-
-          <span
-            class="card-arrow"
-            aria-hidden="true"
-          >
-            ↗
-          </span>
-
-        </a>
-
-        <!-- PROJECT MANAGEMENT -->
-        <a
-          class="project-card projectmanagement-card reveal reveal-delay-3"
-          href="projectmanagement.html"
-          aria-label="Project Management ansehen"
-        >
-
-          <div class="card-content">
-
-            <p class="card-label">
-              Planung &amp; Umsetzung
-            </p>
-
-            <h3>
-              Project Management
-            </h3>
-
-            <div class="card-tags">
-
-              <span>
-                Konzeption
-              </span>
-
-              <span>
-                Koordination
-              </span>
-
-            </div>
-
-          </div>
-
-          <span
-            class="card-arrow"
-            aria-hidden="true"
-          >
-            ↗
-          </span>
-
-        </a>
-
-      </div>
-
+      <div class="card-grid"><a class="card card--feature card--marketing" href="marketing.html" aria-label="Marketing und Advertising ansehen"><div class="card-content"><p class="card-label">Strategie &amp; Performance</p> <h3>Marketing &amp; Advertising</h3> <div class="tag-list"><span class="tag">Digital Marketing</span> <span class="tag">Campaigning</span></div></div> <span class="card-arrow" aria-hidden="true">↗</span></a>  <a class="card card--feature card--communications" href="communications.html" aria-label="Communications Management ansehen"><div class="card-content"><p class="card-label">Marke &amp; Kommunikation</p> <h3>Communications Management</h3> <div class="tag-list"><span class="tag">Corporate Communications</span> <span class="tag">Branding</span></div></div> <span class="card-arrow" aria-hidden="true">↗</span></a>  <a class="card card--feature card--content" href="content.html" aria-label="Content und Visual Storytelling ansehen"><div class="card-content"><p class="card-label">Kreation &amp; Produktion</p> <h3>Content &amp; Visual Storytelling</h3> <div class="tag-list"><span class="tag">Video</span> <span class="tag">Visual Design</span></div></div> <span class="card-arrow" aria-hidden="true">↗</span></a>  <a class="card card--feature card--pm" href="projectmanagement.html" aria-label="Project Management ansehen"><div class="card-content"><p class="card-label">Planung &amp; Umsetzung</p> <h3>Project Management</h3> <div class="tag-list"><span class="tag">Konzeption</span> <span class="tag">Koordination</span></div></div> <span class="card-arrow" aria-hidden="true">↗</span></a></div>
     </section>
-
-  </div>
+  </main>
 
   <!-- FOOTER -->
   <footer class="site-footer">
-
-    <div class="footer-inner">
-
-      <span>
-        © 2026 Marko Milovanovic
-      </span>
-
-      <a href="legal.html">
-        Impressum &amp; Datenschutz
-      </a>
-
-    </div>
-
+    <div class="footer-inner"><span>© 2026 Marko Milovanovic</span> <a href="legal.html">Impressum &amp; Datenschutz</a></div>
   </footer>
-
-  <script src="script.js"></script>
-
 </body>
+</html>
