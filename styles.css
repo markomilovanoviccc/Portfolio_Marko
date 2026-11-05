@@ -172,8 +172,7 @@ h1,
 h2,
 h3 {
   overflow-wrap: break-word;
-  hyphens: auto;
-  hyphenate-limit-chars: 14 6 6;
+  hyphens: none;
 }
 
 img {
@@ -2432,7 +2431,43 @@ html:not(.no-intro) .hero--home h1 {
     --fs-h1: clamp(2.3rem, 11.4vw, 5rem);
     --fs-word: clamp(3.2rem, 16vw, 6rem);
     --fs-display: clamp(2.5rem, 12vw, 5rem);
-    --fs-h2: clamp(1.95rem, 9.6vw, 3.6rem);
+    --fs-h2: clamp(1.7rem, 9vw, 3.6rem);
+    --fs-h3: clamp(1.4rem, 7vw, 1.9rem);
+    --fs-card: clamp(1.3rem, 6.6vw, 1.7rem);
+  }
+
+  /* Nur hier gelten die wenigen festen Trennstellen (&shy;) im HTML. */
+  h2,
+  h3 {
+    hyphens: manual;
+  }
+
+  .hero--home h1 {
+    font-size: clamp(2.6rem, 13.5vw, 5rem);
+  }
+
+  .card--feature h3 {
+    font-size: clamp(1.7rem, 8.4vw, 2.6rem);
+  }
+
+  .card--quote strong {
+    font-size: clamp(1.4rem, 7.2vw, 2rem);
+  }
+
+  .card--xl h3 {
+    font-size: clamp(1.6rem, 7.6vw, 2.4rem);
+  }
+
+  .teaser-visual strong {
+    font-size: clamp(2.2rem, 11vw, 3.4rem);
+  }
+
+  .document-cover strong {
+    font-size: clamp(2rem, 10.2vw, 3.4rem);
+  }
+
+  main .legal-section h2 {
+    font-size: clamp(1.5rem, 7vw, 2rem);
   }
 
   .section-head--center {
